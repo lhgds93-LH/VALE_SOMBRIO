@@ -1,24 +1,18 @@
-# Vale Sombrio — iOS PWA Fullscreen
+# Vale Sombrio — 6C Hotfix Caderno
 
-Pacote para GitHub Pages com suporte a abertura pela Tela de Início no iPhone.
+Hotfix técnico para corrigir retorno do Caderno no iPhone/PWA.
 
-## Arquivos
+## Alterações
 
-- `index.html` — jogo HTML único.
-- `manifest.webmanifest` — configuração PWA.
-- `icon-180.png` — ícone Apple/iOS.
-- `icon-192.png` e `icon-512.png` — ícones PWA.
-- `.nojekyll` — evita processamento pelo Jekyll.
+- Botão do Caderno alterado para "Voltar ao jogo".
+- Fechamento do Caderno reforçado para Safari/iOS/PWA.
+- Toque fora do Caderno também retorna ao jogo.
 
-## Como usar no iPhone
+## Não alterado
 
-1. Publique no GitHub Pages.
-2. Abra o link no Safari.
-3. Toque em Compartilhar.
-4. Toque em Adicionar à Tela de Início.
-5. Abra pelo ícone criado.
-6. Gire o iPhone na horizontal e toque em Liberar áudio.
-
-## Observação
-
-A lógica, puzzles, respostas e progressão do jogo não foram alterados. O pacote adiciona apenas recursos de publicação/PWA.
+- Puzzles.
+- Respostas.
+- Ordem de progressão.
+- Dificuldade.
+- Assets principais.
+- Lógica narrativa.

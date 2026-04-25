@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
-<title>Vale Sombrio — iOS PWA Fullscreen</title>
+<title>Vale Sombrio — 6C Hotfix Caderno</title>
 <style>
 :root {
   --text:#eef4ff; --muted:rgba(238,244,255,.68); --cyan:#18d7ff; --pink:#ff2d75;
@@ -75,6 +75,7 @@ h3{margin:0;line-height:1;letter-spacing:-.04em} p{margin:0;color:rgba(238,244,2
 .hot:active,.hot:focus-visible{outline:none;border-color:rgba(24,215,255,.65);background:rgba(24,215,255,.10);box-shadow:0 0 28px rgba(24,215,255,.2),inset 0 0 0 1px rgba(24,215,255,.28)}
 .backdrop{position:fixed;inset:0;display:none;place-items:center;padding:max(10px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));background:rgba(0,0,0,.68);z-index:60}
 .backdrop.active{display:grid}
+.backdrop.force-close{display:none!important;pointer-events:none!important}
 .modal{width:min(900px,94vw);max-height:90svh;display:grid;grid-template-columns:minmax(260px,1.08fr) minmax(260px,.92fr);overflow:hidden;border:1px solid rgba(255,255,255,.18);border-radius:26px;background:var(--panel2);box-shadow:var(--shadow)}
 .mi{min-height:0;background:#000;border-right:1px solid rgba(255,255,255,.14)} .mi img{width:100%;height:100%;max-height:90svh;display:block;object-fit:cover}
 .mc{padding:clamp(16px,3vw,28px);display:flex;flex-direction:column;justify-content:center;gap:12px} .mk{color:var(--cyan);text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:950}
@@ -153,7 +154,7 @@ h3{margin:0;line-height:1;letter-spacing:-.04em} p{margin:0;color:rgba(238,244,2
 <div id="nb" class="backdrop">
   <article class="modal" style="grid-template-columns:.9fr 1.1fr">
     <div class="mi"><img id="nimg" alt="Referência"></div>
-    <div class="mc"><div class="mk">Caderno</div><h3>Investigação</h3><p id="nstat">Pistas registradas: 0.</p><div id="nlist" class="notes"></div><div class="actions"><button id="closeN" class="btn ghost">Fechar</button></div></div>
+    <div class="mc"><div class="mk">Caderno</div><h3>Investigação</h3><p id="nstat">Pistas registradas: 0.</p><div id="nlist" class="notes"></div><div class="actions"><button id="closeN" class="btn ghost">Voltar ao jogo</button></div></div>
   </article>
 </div>
 
@@ -356,11 +357,29 @@ function renderNotes(){
 document.querySelectorAll("[data-role]").forEach(b=>b.onclick=()=>pick(b.dataset.role));
 $("#goBtn").onclick=enter; $("#audioBtn").onclick=toggleSound; $("#sound").onclick=toggleSound; $("#audioTest").onclick=()=>{startSound();toast("Áudio ativado em volume reforçado.")};
 $("#fsStart").onclick=fullscreen; $("#fsIntro").onclick=fullscreen; $("#fsGame").onclick=fullscreen;
-$("#back").onclick=()=>show("select"); $("#book").onclick=()=>{$("#nb").classList.add("active");renderNotes()};
-$("#closeN").onclick=()=>$("#nb").classList.remove("active"); $("#closeM").onclick=closeM; $("#reg").onclick=reg; $("#tryLock").onclick=tryLock;
+$("#back").onclick=()=>show("select"); $("#book").onclick=()=>{const nb=$("#nb");nb.classList.remove("force-close");nb.classList.add("active");renderNotes()};
+function closeNotebook(e){
+  if(e){
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  const nb=$("#nb");
+  nb.classList.remove("active");
+  nb.classList.add("force-close");
+  setTimeout(()=>nb.classList.remove("force-close"),80);
+  toast("Retornando ao jogo.");
+}
+$("#closeN").onclick=closeNotebook;
+$("#closeN").addEventListener("touchstart",closeNotebook,{passive:false});
+$("#closeN").addEventListener("pointerup",closeNotebook); $("#closeM").onclick=closeM; $("#reg").onclick=reg; $("#tryLock").onclick=tryLock;
 $("#lockInput").addEventListener("keydown",e=>{if(e.key==="Enter")tryLock()});
-[$("#mb"),$("#nb")].forEach(b=>b.onclick=e=>{if(e.target===b)b.classList.remove("active")});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeM();$("#nb").classList.remove("active")}});
+[$("#mb"),$("#nb")].forEach(b=>b.onclick=e=>{
+  if(e.target===b){
+    if(b.id==="nb") closeNotebook(e);
+    else b.classList.remove("active");
+  }
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeM();closeNotebook(e)}});
 let lastTouchEnd=0;
 document.addEventListener("touchend",function(e){
   const now=Date.now();
