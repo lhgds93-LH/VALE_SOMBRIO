@@ -2,8 +2,19 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Vale Sombrio — Etapa 6B Puzzles Coop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Vale Sombrio">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Vale Sombrio">
+<meta name="theme-color" content="#02030a">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<title>Vale Sombrio — iOS PWA Fullscreen</title>
 <style>
 :root {
   --text:#eef4ff; --muted:rgba(238,244,255,.68); --cyan:#18d7ff; --pink:#ff2d75;
@@ -11,8 +22,10 @@
   --shadow:0 18px 70px rgba(0,0,0,.62);
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--text);font-family:inherit;touch-action:manipulation}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+html{height:-webkit-fill-available}
+body{min-height:100vh;min-height:-webkit-fill-available}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:var(--text);font-family:inherit;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-text-size-adjust:100%;overscroll-behavior:none}
 button,input{font:inherit} button{border:0;color:var(--text);cursor:pointer}
 .screen{position:fixed;inset:0;display:none;background:radial-gradient(circle at 20% 18%,rgba(255,45,117,.20),transparent 33%),radial-gradient(circle at 80% 18%,rgba(24,215,255,.16),transparent 33%),linear-gradient(135deg,#03040a,#080d18 52%,#02030a)}
 .screen.active{display:grid}
@@ -84,9 +97,9 @@ h3{margin:0;line-height:1;letter-spacing:-.04em} p{margin:0;color:rgba(238,244,2
   <section class="card">
     <div class="eyebrow">Coop offline · Etapa 6B</div>
     <h1>Vale Sombrio</h1>
-    <p>Escolha seu papel. Puzzles refinados para coop offline com dificuldade mais alta.</p>
+    <p>Para tela cheia no iPhone: abra no Safari, toque em Compartilhar e adicione à Tela de Início. Depois abra pelo ícone criado.</p>
     <div class="actions">
-      <button class="btn" id="fsStart">Tela cheia</button>
+      <button class="btn" id="fsStart">Modo tela cheia</button>
       <button class="btn" id="audioTest">Testar áudio</button>
     </div>
     <div class="grid">
@@ -105,7 +118,7 @@ h3{margin:0;line-height:1;letter-spacing:-.04em} p{margin:0;color:rgba(238,244,2
 <section id="comic" class="screen center">
   <div class="comic">
     <article class="panel"><img id="ciA" alt=""><div class="bubble"><strong id="ctA"></strong><p id="cxA"></p></div></article>
-    <article class="panel"><img id="ciB" alt=""><div class="comic-actions"><button id="audioBtn" class="btn">Áudio: off</button><button id="fsIntro" class="btn">Tela cheia</button><button id="goBtn" class="btn primary">Iniciar</button></div><div class="bubble"><strong id="ctB"></strong><p id="cxB"></p></div></article>
+    <article class="panel"><img id="ciB" alt=""><div class="comic-actions"><button id="audioBtn" class="btn">Áudio: off</button><button id="fsIntro" class="btn">Modo tela cheia</button><button id="goBtn" class="btn primary">Iniciar</button></div><div class="bubble"><strong id="ctB"></strong><p id="cxB"></p></div></article>
   </div>
 </section>
 
@@ -119,7 +132,7 @@ h3{margin:0;line-height:1;letter-spacing:-.04em} p{margin:0;color:rgba(238,244,2
       <div class="title"><strong id="st"></strong><span id="ss"></span></div>
       <button id="book" class="btn">Caderno</button>
       <button id="sound" class="btn">Som</button>
-      <button id="fsGame" class="btn">Tela cheia</button>
+      <button id="fsGame" class="btn">Modo tela cheia</button>
     </header>
     <div id="hots"></div>
     <div class="room-tabs" id="roomTabs"></div>
@@ -159,11 +172,30 @@ function show(id){["select","comic","game"].forEach(x=>$("#"+x).classList.remove
 function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("active");clearTimeout(toast.tm);toast.tm=setTimeout(()=>el.classList.remove("active"),1900)}
 function asset(key){return A[key] || key}
 
+function isIOS(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform==="MacIntel" && navigator.maxTouchPoints>1);
+}
+function isStandalone(){
+  return window.navigator.standalone===true || window.matchMedia("(display-mode: standalone)").matches || window.matchMedia("(display-mode: fullscreen)").matches;
+}
 function fullscreen(){
   const el=document.documentElement;
   const fn=el.requestFullscreen||el.webkitRequestFullscreen||el.msRequestFullscreen;
-  if(fn) fn.call(el).catch?.(()=>toast("Tela cheia não permitida neste navegador."));
-  else toast("Tela cheia indisponível neste navegador.");
+  if(isIOS() && !isStandalone()){
+    toast("No iPhone, use Compartilhar > Adicionar à Tela de Início e abra pelo ícone.");
+    return;
+  }
+  if(fn){
+    try{
+      const result=fn.call(el);
+      if(result && result.catch) result.catch(()=>toast(isIOS()?"Abra pela Tela de Início para tela cheia.":"Tela cheia não permitida neste navegador."));
+      else toast("Modo tela cheia solicitado.");
+    }catch(e){
+      toast(isIOS()?"Abra pela Tela de Início para tela cheia.":"Tela cheia indisponível neste navegador.");
+    }
+  } else {
+    toast(isIOS()?"Abra pela Tela de Início para tela cheia.":"Tela cheia indisponível neste navegador.");
+  }
 }
 
 function startSound(){
@@ -329,6 +361,12 @@ $("#closeN").onclick=()=>$("#nb").classList.remove("active"); $("#closeM").oncli
 $("#lockInput").addEventListener("keydown",e=>{if(e.key==="Enter")tryLock()});
 [$("#mb"),$("#nb")].forEach(b=>b.onclick=e=>{if(e.target===b)b.classList.remove("active")});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeM();$("#nb").classList.remove("active")}});
+let lastTouchEnd=0;
+document.addEventListener("touchend",function(e){
+  const now=Date.now();
+  if(now-lastTouchEnd<=300) e.preventDefault();
+  lastTouchEnd=now;
+},{passive:false});
 </script>
 </body>
 </html>

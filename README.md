@@ -1,24 +1,24 @@
-# Vale Sombrio — GitHub Pages
+# Vale Sombrio — iOS PWA Fullscreen
 
-Pacote pronto para publicar no GitHub Pages.
+Pacote para GitHub Pages com suporte a abertura pela Tela de Início no iPhone.
 
 ## Arquivos
 
-- `index.html` — jogo em HTML único.
-- `.nojekyll` — evita processamento pelo Jekyll no GitHub Pages.
+- `index.html` — jogo HTML único.
+- `manifest.webmanifest` — configuração PWA.
+- `icon-180.png` — ícone Apple/iOS.
+- `icon-192.png` e `icon-512.png` — ícones PWA.
+- `.nojekyll` — evita processamento pelo Jekyll.
 
-## Como publicar
+## Como usar no iPhone
 
-1. Crie um repositório no GitHub.
-2. Envie estes arquivos para a raiz do repositório.
-3. Vá em **Settings > Pages**.
-4. Em **Build and deployment**, escolha:
-   - Source: **Deploy from a branch**
-   - Branch: **main**
-   - Folder: **/root**
-5. Salve.
-6. Aguarde o GitHub gerar o link `https://seuusuario.github.io/nome-do-repositorio/`.
+1. Publique no GitHub Pages.
+2. Abra o link no Safari.
+3. Toque em Compartilhar.
+4. Toque em Adicionar à Tela de Início.
+5. Abra pelo ícone criado.
+6. Gire o iPhone na horizontal e toque em Liberar áudio.
 
 ## Observação
 
-Esta versão foi apenas empacotada para GitHub Pages. O conteúdo do jogo não foi alterado.
+A lógica, puzzles, respostas e progressão do jogo não foram alterados. O pacote adiciona apenas recursos de publicação/PWA.
