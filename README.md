@@ -1,12 +1,12 @@
-# Vale Sombrio — 6C Hotfix Caderno
+# Vale Sombrio — 6D Assets Aprovados
 
-Hotfix técnico para corrigir retorno do Caderno no iPhone/PWA.
+Base: 6C Hotfix Caderno PWA.
 
-## Alterações
+## Alterações desta etapa
 
-- Botão do Caderno alterado para "Voltar ao jogo".
-- Fechamento do Caderno reforçado para Safari/iOS/PWA.
-- Toque fora do Caderno também retorna ao jogo.
+- Substituição dos closes antigos pelos assets aprovados.
+- Ajustes de textos de apoio para combinar com as imagens.
+- Mantido pacote PWA/GitHub Pages.
 
 ## Não alterado
 
@@ -14,5 +14,4 @@ Hotfix técnico para corrigir retorno do Caderno no iPhone/PWA.
 - Respostas.
 - Ordem de progressão.
 - Dificuldade.
-- Assets principais.
-- Lógica narrativa.
+- Fluxo principal.
